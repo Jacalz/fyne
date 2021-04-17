@@ -22,7 +22,7 @@ type Select struct {
 
 	focused bool
 	hovered bool
-	popUp   *PopUpMenu
+	popUp   *PopUp
 	tapAnim *fyne.Animation
 	tapBG   *canvas.Rectangle
 }
@@ -64,6 +64,8 @@ func (s *Select) CreateRenderer() fyne.WidgetRenderer {
 	txtProv := newTextProvider(s.Selected, s)
 	txtProv.ExtendBaseWidget(txtProv)
 
+	s.createPopUp()
+
 	background := &canvas.Rectangle{}
 	line := canvas.NewRectangle(theme.ShadowColor())
 	s.tapBG = canvas.NewRectangle(color.Transparent)
@@ -98,7 +100,6 @@ func (s *Select) FocusLost() {
 func (s *Select) Hide() {
 	if s.popUp != nil {
 		s.popUp.Hide()
-		s.popUp = nil
 	}
 	s.BaseWidget.Hide()
 }
@@ -132,7 +133,7 @@ func (s *Select) Move(pos fyne.Position) {
 	s.BaseWidget.Move(pos)
 
 	if s.popUp != nil {
-		s.popUp.Move(s.popUpPos())
+		//s.popUp.Move(s.popUpPos())
 	}
 }
 
@@ -142,7 +143,7 @@ func (s *Select) Resize(size fyne.Size) {
 	s.BaseWidget.Resize(size)
 
 	if s.popUp != nil {
-		s.popUp.Resize(fyne.NewSize(size.Width, s.popUp.MinSize().Height))
+		//s.popUp.Resize(fyne.NewSize(size.Width, s.popUp.MinSize().Height))
 	}
 }
 
@@ -226,7 +227,6 @@ func (s *Select) object() fyne.Widget {
 
 func (s *Select) optionTapped(text string) {
 	s.SetSelected(text)
-	s.popUp = nil
 }
 
 func (s *Select) popUpPos() fyne.Position {
@@ -234,18 +234,28 @@ func (s *Select) popUpPos() fyne.Position {
 	return buttonPos.Add(fyne.NewPos(0, s.Size().Height-theme.InputBorderSize()))
 }
 
-func (s *Select) showPopUp() {
-	var items []*fyne.MenuItem
-	for _, option := range s.Options {
-		text := option // capture
-		item := fyne.NewMenuItem(option, func() {
-			s.optionTapped(text)
-		})
-		items = append(items, item)
+func (s *Select) createPopUp() {
+	length := func() int {
+		return len(s.Options)
+	}
+
+	create := func() fyne.CanvasObject {
+		return &Button{Importance: LowImportance}
+	}
+
+	update := func(item ListItemID, object fyne.CanvasObject) {
+		button := object.(*Button)
+		button.SetText(s.Options[item])
+		button.OnTapped = func() {
+			s.optionTapped(s.Options[item])
+		}
 	}
 
 	c := fyne.CurrentApp().Driver().CanvasForObject(s.super())
-	s.popUp = NewPopUpMenu(fyne.NewMenu("", items...), c)
+	s.popUp = NewPopUp(NewList(length, create, update), c)
+}
+
+func (s *Select) showPopUp() {
 	s.popUp.ShowAtPosition(s.popUpPos())
 	s.popUp.Resize(fyne.NewSize(s.Size().Width, s.popUp.MinSize().Height))
 }
