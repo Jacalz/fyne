@@ -13,6 +13,7 @@ import (
 	"fyne.io/fyne/v2/internal/painter"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"go.uber.org/atomic"
 )
 
 type funcData struct {
@@ -29,8 +30,7 @@ type drawData struct {
 // channel for queuing functions on the main thread
 var funcQueue = make(chan funcData)
 var drawFuncQueue = make(chan drawData)
-var runFlag = false
-var runMutex = &sync.Mutex{}
+var runFlag *atomic.Bool
 var initOnce = &sync.Once{}
 var donePool = &sync.Pool{New: func() interface{} {
 	return make(chan struct{})
@@ -42,9 +42,7 @@ func init() {
 }
 
 func running() bool {
-	runMutex.Lock()
-	defer runMutex.Unlock()
-	return runFlag
+	return runFlag.Load()
 }
 
 // force a function f to run on the main thread
@@ -86,9 +84,7 @@ func (d *gLDriver) initGLFW() {
 
 func (d *gLDriver) runGL() {
 	eventTick := time.NewTicker(time.Second / 60)
-	runMutex.Lock()
-	runFlag = true
-	runMutex.Unlock()
+	runFlag.Store(true)
 
 	d.initGLFW()
 	fyne.CurrentApp().Lifecycle().(*app.Lifecycle).TriggerStarted()

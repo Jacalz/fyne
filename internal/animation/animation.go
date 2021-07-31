@@ -1,10 +1,10 @@
 package animation
 
 import (
-	"sync"
 	"time"
 
 	"fyne.io/fyne/v2"
+	"go.uber.org/atomic"
 )
 
 type anim struct {
@@ -15,8 +15,7 @@ type anim struct {
 	start       time.Time
 	total       int64
 
-	mu      sync.RWMutex
-	stopped bool
+	stopped *atomic.Bool
 }
 
 func newAnim(a *fyne.Animation) *anim {
@@ -27,14 +26,9 @@ func newAnim(a *fyne.Animation) *anim {
 }
 
 func (a *anim) setStopped() {
-	a.mu.Lock()
-	a.stopped = true
-	a.mu.Unlock()
+	a.stopped.Store(true)
 }
 
 func (a *anim) isStopped() bool {
-	a.mu.RLock()
-	ret := a.stopped
-	a.mu.RUnlock()
-	return ret
+	return a.stopped.Load()
 }
