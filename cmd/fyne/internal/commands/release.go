@@ -37,7 +37,7 @@ func Release() *cli.Command {
 			&cli.StringFlag{
 				Name:        "target",
 				Aliases:     []string{"os"},
-				Usage:       "The operating system to target (android, android/arm, android/arm64, android/amd64, android/386, darwin, freebsd, ios, linux, netbsd, openbsd, windows)",
+				Usage:       "The operating system to target (android, android/arm, android/arm64, android/amd64, android/386, darwin, dragonfly, freebsd, ios, linux, netbsd, openbsd, windows)",
 				Destination: &r.os,
 			},
 			&cli.StringFlag{

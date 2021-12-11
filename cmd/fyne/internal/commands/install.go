@@ -144,7 +144,7 @@ func (i *Installer) install() error {
 		switch p.os {
 		case "darwin":
 			i.installDir = "/Applications"
-		case "linux", "openbsd", "freebsd", "netbsd":
+		case "linux", "dragonfly", "freebsd", "netbsd", "openbsd":
 			i.installDir = "/" // the tarball contains the structure starting at usr/local
 		case "windows":
 			dirName := p.name

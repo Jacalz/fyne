@@ -225,7 +225,7 @@ func (p *Packager) doPackage() error {
 	switch p.os {
 	case "darwin":
 		return p.packageDarwin()
-	case "linux", "openbsd", "freebsd", "netbsd":
+	case "linux", "dragonfly", "freebsd", "netbsd", "openbsd":
 		return p.packageUNIX()
 	case "windows":
 		return p.packageWindows()

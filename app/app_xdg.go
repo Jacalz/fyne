@@ -1,6 +1,6 @@
-//go:build !ci && (linux || openbsd || freebsd || netbsd) && !android
+//go:build !ci && (linux || dragonfly || freebsd || netbsd || openbsd) && !android
 // +build !ci
-// +build linux openbsd freebsd netbsd
+// +build linux dragonfly freebsd netbsd openbsd
 // +build !android
 
 package app

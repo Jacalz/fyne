@@ -1,5 +1,5 @@
-//go:build (linux || openbsd || freebsd || netbsd) && !android
-// +build linux openbsd freebsd netbsd
+//go:build (linux || dragonfly || freebsd || netbsd || openbsd) && !android
+// +build linux dragonfly freebsd netbsd openbsd
 // +build !android
 
 package dialog

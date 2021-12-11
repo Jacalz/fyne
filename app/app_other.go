@@ -1,5 +1,5 @@
-//go:build ci || (!linux && !darwin && !windows && !freebsd && !openbsd && !netbsd)
-// +build ci !linux,!darwin,!windows,!freebsd,!openbsd,!netbsd
+//go:build ci || (!linux && !darwin && !windows && !dragonfly && !freebsd && !openbsd && !netbsd)
+// +build ci !linux,!darwin,!windows,!dragonfly,!freebsd,!netbsd,!openbsd
 
 package app
 
