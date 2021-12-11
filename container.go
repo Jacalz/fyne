@@ -26,12 +26,7 @@ func NewContainer(objects ...CanvasObject) *Container {
 //
 // Deprecated: Use container.NewWithoutLayout() instead
 func NewContainerWithoutLayout(objects ...CanvasObject) *Container {
-	ret := &Container{
-		Objects: objects,
-	}
-
-	ret.size = ret.MinSize()
-	return ret
+	return &Container{Objects: objects}
 }
 
 // NewContainerWithLayout returns a new Container instance holding the specified
@@ -39,14 +34,7 @@ func NewContainerWithoutLayout(objects ...CanvasObject) *Container {
 //
 // Deprecated: Use container.New() instead
 func NewContainerWithLayout(layout Layout, objects ...CanvasObject) *Container {
-	ret := &Container{
-		Objects: objects,
-		Layout:  layout,
-	}
-
-	ret.size = layout.MinSize(objects)
-	ret.layout()
-	return ret
+	return &Container{Objects: objects, Layout: layout}
 }
 
 // Add appends the specified object to the items this container manages.
