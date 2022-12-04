@@ -24,6 +24,19 @@ jobs:
         go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
         go install honnef.co/go/tools/cmd/staticcheck@v0.3.3
 
+    - name: Update coverage
+      run: |
+        go get github.com/mattn/goveralls@latest
+        set -e
+        go test -tags ci -covermode=atomic -coverprofile=coverage.out ./...
+        coverage=`go tool cover -func coverage.out | grep total | tr -s '\t' | cut -f 3 | grep -o '[^%]*'`
+        if (( $(echo "$coverage < 63" | bc) )); then echo "Test coverage lowered"; exit 1; fi
+
+    - name: Update PR Coverage
+      uses: shogo82148/actions-goveralls@v1
+      with:
+        path-to-profile: coverage.out
+
     - name: Cleanup repository
       run: rm -rf vendor/
 
