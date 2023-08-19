@@ -1,6 +1,8 @@
 package glfw
 
 import (
+	"os"
+	"os/signal"
 	"runtime"
 	"sync"
 	"time"
@@ -10,6 +12,7 @@ import (
 	"fyne.io/fyne/v2/internal/cache"
 	"fyne.io/fyne/v2/internal/painter"
 	"fyne.io/fyne/v2/internal/scale"
+	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
 type funcData struct {
@@ -67,6 +70,7 @@ func runOnMain(f func()) {
 		defer donePool.Put(done)
 
 		funcQueue <- funcData{f: f, done: done}
+		glfw.PostEmptyEvent()
 
 		<-done
 	}
@@ -121,6 +125,15 @@ func (d *gLDriver) runGL() {
 		d.trayStart()
 	}
 	fyne.CurrentApp().Lifecycle().(*app.Lifecycle).TriggerStarted()
+
+	ctrlC := make(chan os.Signal, 1)
+	signal.Notify(ctrlC, os.Interrupt)
+	go func() {
+		<-ctrlC
+		glfw.PostEmptyEvent()
+		d.Quit()
+	}()
+
 	for {
 		select {
 		case <-d.done:
@@ -135,7 +148,6 @@ func (d *gLDriver) runGL() {
 				f.done <- struct{}{}
 			}
 		case <-eventTick.C:
-			d.tryPollEvents()
 			newWindows := []fyne.Window{}
 			reassign := false
 			for _, win := range d.windowList() {
@@ -189,6 +201,8 @@ func (d *gLDriver) runGL() {
 					d.Quit()
 				}
 			}
+
+			d.tryPollEvents()
 		}
 	}
 }
