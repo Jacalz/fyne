@@ -37,3 +37,7 @@ func (d *gLDriver) tryPollEvents() {
 func (d *gLDriver) Terminate() {
 	glfw.Terminate()
 }
+
+func postEmptyEvent() {
+	glfw.PostEmptyEvent()
+}

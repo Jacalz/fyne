@@ -12,7 +12,6 @@ import (
 	"fyne.io/fyne/v2/internal/cache"
 	"fyne.io/fyne/v2/internal/painter"
 	"fyne.io/fyne/v2/internal/scale"
-	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
 type funcData struct {
@@ -70,7 +69,7 @@ func runOnMain(f func()) {
 		defer donePool.Put(done)
 
 		funcQueue <- funcData{f: f, done: done}
-		glfw.PostEmptyEvent()
+		postEmptyEvent()
 
 		<-done
 	}
@@ -130,7 +129,7 @@ func (d *gLDriver) runGL() {
 	signal.Notify(ctrlC, os.Interrupt)
 	go func() {
 		<-ctrlC
-		glfw.PostEmptyEvent()
+		postEmptyEvent()
 		d.Quit()
 	}()
 

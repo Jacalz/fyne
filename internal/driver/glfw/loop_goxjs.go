@@ -31,9 +31,13 @@ func (d *gLDriver) tryPollEvents() {
 		}
 	}()
 
-	glfw.PollEvents() // This call blocks while window is being resized, which prevents freeDirtyTextures from being called
+	glfw.WaitEvents() // This call blocks while window is being resized, which prevents freeDirtyTextures from being called
 }
 
 func (d *gLDriver) Terminate() {
 	glfw.Terminate()
+}
+
+func postEmptyEvent() {
+	glfw.PostEmptyEvent()
 }
