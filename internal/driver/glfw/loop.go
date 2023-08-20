@@ -147,6 +147,8 @@ func (d *gLDriver) runGL() {
 				f.done <- struct{}{}
 			}
 		case <-eventTick.C:
+			d.tryPollEvents()
+
 			newWindows := []fyne.Window{}
 			reassign := false
 			for _, win := range d.windowList() {
@@ -200,8 +202,6 @@ func (d *gLDriver) runGL() {
 					d.Quit()
 				}
 			}
-
-			d.tryPollEvents()
 		}
 	}
 }
