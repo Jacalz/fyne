@@ -1,5 +1,4 @@
 //go:build !ci && js && !wasm
-// +build !ci,js,!wasm
 
 package app
 

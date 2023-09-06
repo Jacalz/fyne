@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 //go:build (linux && !android) || freebsd
-// +build linux,!android freebsd
 
 package app
 
