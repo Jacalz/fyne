@@ -4,8 +4,8 @@ package glfw
 
 import (
 	"bytes"
+	"context"
 	"image/png"
-	"os"
 	"os/signal"
 	"runtime"
 	"syscall"
@@ -222,13 +222,9 @@ func (d *gLDriver) CurrentKeyModifiers() fyne.KeyModifier {
 	return d.currentKeyModifiers
 }
 
-// this function should be invoked from a goroutine
 func (d *gLDriver) catchTerm() {
-	terminateSignal := make(chan os.Signal, 1)
-	signal.Notify(terminateSignal, syscall.SIGINT, syscall.SIGTERM)
-
-	<-terminateSignal
-	fyne.Do(d.Quit)
+	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	context.AfterFunc(ctx, d.Quit)
 }
 
 func addMissingQuitForMenu(menu *fyne.Menu, d *gLDriver) {

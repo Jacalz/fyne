@@ -158,7 +158,7 @@ func (d *gLDriver) Run() {
 		panic("Run() or ShowAndRun() must be called from main goroutine")
 	}
 
-	go d.catchTerm()
+	d.catchTerm()
 	d.runGL()
 
 	// Ensure lifecycle events run to completion before the app exits
